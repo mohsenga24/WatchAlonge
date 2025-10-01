@@ -45,10 +45,40 @@ namespace WatchAlonge.Controllers
         // after that it will just return to the same view. 
         public IActionResult Create(Category category)
         {
-            _context.Categories.Add(category);
-            _context.SaveChanges();
-            // RedirectToAction() ---> you pass the view name here , and it will redirect to that view
-            return RedirectToAction("Index");
+            // custom validation , description is not required in the model but we want to make it required here. 
+            if (string.IsNullOrEmpty(category.Description)) 
+            {
+                // adding error to the ModelState (so the if (ModelState.IsValid) will be false ) 
+                ModelState.AddModelError("Description", "Description is required.");
+            }
+
+
+
+            // ModelState --> in our case it will check if the required fields of Category model are filled or not
+            // if yes , then it will add the category to the database. 
+
+            // this is server side validation
+            // we can do it , but doing the validation on client side is better for the server load
+            // to do on client side we just use this ---> <span asp-validation-for="Name" class="text-danger"></span>
+            // put this span under each input field in the form , just change the Name to the field name
+            // or u can use <div asp-validation-summary="All" class="text-danger"></div>
+            // to show all validation errors at once
+            if (ModelState.IsValid) 
+            {
+                // TempData["#name"] --> u can put this msg in the view to show success or error messages
+                // just do this ---> @TempData["Secuss"] or @TempData["error"] in any tag. 
+                TempData["Secuss"] = "Validation passed.";
+                _context.Categories.Add(category);
+                _context.SaveChanges();
+                // RedirectToAction() ---> you pass the view name here , and it will redirect to that view
+                return RedirectToAction("Index");
+            }
+            else 
+            {
+                TempData["error"] = "Error while creating category. Please try again.";
+                return View(category);
+            }
+
         }
 
         // Edit category by id

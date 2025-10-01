@@ -26,6 +26,13 @@
             <input asp-for="Price" type="Price" Name="Price" id="Price" class="form-control" required />
             <span asp-validation-for="Price" class="text-danger"></span>
         </div>
+        <div class="form-group">
+            <label asp-for="category" class="control-label"></label>
+            <select asp-for="category" class="form-control" asp-items="@(new SelectList(ViewBag.Categories))">
+                <option value="">-- Select Category --</option>
+            </select>
+
+        </div>
         <br />
         <div class="form-group">
             <button type="submit" class="btn btn-primary"> confirm </button>
